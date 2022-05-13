@@ -2,12 +2,28 @@ import { Component } from 'react';
 import style from './Searchbar.module.css';
 
 export class Searchbar extends Component {
+  state = {
+    value: '',
+    filter: '',
+  };
+
+  onSubmitForm = event => {
+    event.preventDefault();
+
+    this.props.onSubmit(this.state.value);
+  };
+
+  onChangeInput = event => {
+    this.setState({
+      value: event.currentTarget.value,
+    });
+  };
+
   render() {
     return (
       <header className={style.Searchbar}>
-        <form className={style.SearchForm}>
+        <form onSubmit={this.onSubmitForm} className={style.SearchForm}>
           <button type="submit" className={style.SearchFormButton}>
-            {/* <span className={style.SearchFormButtonLabel}>Search</span> */}
             <svg
               className={style.SearchFormIcon}
               aria-hidden="true"
@@ -20,7 +36,9 @@ export class Searchbar extends Component {
           </button>
 
           <input
+            onChange={this.onChangeInput}
             className={style.SearchFormInput}
+            value={this.state.value}
             type="text"
             autoComplete="off"
             autoFocus
