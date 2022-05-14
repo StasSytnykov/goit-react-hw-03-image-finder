@@ -3,6 +3,7 @@ import { Searchbar } from './Searchbar';
 import { ImageGellary } from './ImageGallery';
 import { ImgApiService } from './services/api';
 import { Button } from './Button';
+import { Loader } from 'components/Loader';
 
 const imgApiService = new ImgApiService();
 
@@ -81,6 +82,7 @@ export class App extends Component {
       <>
         <Searchbar onSubmit={this.onSearch} />
         <ImageGellary images={this.state.imageArr} />
+        {this.state.isLoading && <Loader />}
         {this.state.imageArr.length >= 12 && (
           <Button onLoadMore={this.onLoadMore} loading={this.state.isLoading} />
         )}
