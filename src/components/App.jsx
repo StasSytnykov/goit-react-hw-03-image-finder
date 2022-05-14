@@ -1,7 +1,10 @@
 import { Component } from 'react';
 import { Searchbar } from './Searchbar';
 import { ImageGellary } from './ImageGallery';
-import { onFetchImg } from './services/api';
+import { ImgApiService } from './services/api';
+import { Button } from './Button';
+
+const imgApiService = new ImgApiService();
 
 export class App extends Component {
   state = {
@@ -11,12 +14,23 @@ export class App extends Component {
     isLoading: false,
   };
 
-  // async componentDidMount() {
-  //   this.setState({ isLoading: true });
+  componentDidUpdate(prevProps, prevState) {
+    imgApiService.query = this.state.query;
 
-  //   if (this.state.query) {
+    if (prevState.query !== this.state.query) {
+      this.onFetchImage();
+    }
+  }
+
+  // async componentDidUpdate(prevProps, prevState) {
+  //   imgApiService.query = this.state.query;
+
+  //   if (prevState.query !== this.state.query) {
+  //     this.setState({ isLoading: true });
+
   //     try {
-  //       const imageArr = await onFetchImg(this.state.query);
+  //       const imageArr = await imgApiService.fetchImage();
+  //       console.log(imageArr);
   //       this.setState({ imageArr });
   //     } catch (error) {
   //       this.setState({ error });
@@ -26,23 +40,19 @@ export class App extends Component {
   //   }
   // }
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (prevState.query !== this.state.query) {
-      this.setState({ isLoading: true });
+  onFetchImage = async () => {
+    this.setState({ isLoading: true });
 
-      try {
-        const imageArr = await onFetchImg(this.state.query);
-        this.setState({ imageArr });
-      } catch (error) {
-        this.setState({ error });
-      } finally {
-        this.setState({ isLoading: false });
-      }
+    try {
+      const imageArr = await imgApiService.fetchImage();
+      console.log(imageArr);
+      this.setState({ imageArr });
+    } catch (error) {
+      this.setState({ error });
+    } finally {
+      this.setState({ isLoading: false });
     }
-
-    console.log(prevProps);
-    console.log(prevState);
-  }
+  };
 
   onSearch = newQuery => {
     this.setState({
@@ -50,11 +60,30 @@ export class App extends Component {
     });
   };
 
+  onLoadMore = async () => {
+    this.setState({ isLoading: true });
+
+    try {
+      const imageArr = await imgApiService.fetchImage();
+      console.log(imageArr);
+      this.setState(prevState => ({
+        imageArr: [...prevState.imageArr, ...imageArr],
+      }));
+    } catch (error) {
+      this.setState({ error });
+    } finally {
+      this.setState({ isLoading: false });
+    }
+  };
+
   render() {
     return (
       <>
         <Searchbar onSubmit={this.onSearch} />
         <ImageGellary images={this.state.imageArr} />
+        {this.state.imageArr.length >= 12 && (
+          <Button onLoadMore={this.onLoadMore} loading={this.state.isLoading} />
+        )}
       </>
     );
   }

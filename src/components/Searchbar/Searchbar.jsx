@@ -11,12 +11,18 @@ export class Searchbar extends Component {
     event.preventDefault();
 
     this.props.onSubmit(this.state.value);
+    this.onReset(event);
   };
 
   onChangeInput = event => {
     this.setState({
       value: event.currentTarget.value,
     });
+  };
+
+  onReset = event => {
+    this.setState({ value: '' });
+    event.target.reset();
   };
 
   render() {
