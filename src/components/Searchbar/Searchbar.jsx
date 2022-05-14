@@ -4,7 +4,6 @@ import style from './Searchbar.module.css';
 export class Searchbar extends Component {
   state = {
     value: '',
-    filter: '',
   };
 
   onSubmitForm = event => {

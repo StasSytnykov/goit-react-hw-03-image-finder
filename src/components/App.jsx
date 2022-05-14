@@ -1,9 +1,10 @@
 import { Component } from 'react';
 import { Searchbar } from './Searchbar';
-import { ImageGellary } from './ImageGallery';
+import { ImageGallery } from './ImageGallery';
 import { ImgApiService } from './services/api';
 import { Button } from './Button';
 import { Loader } from 'components/Loader';
+import { Modal } from './Modal';
 
 const imgApiService = new ImgApiService();
 
@@ -13,6 +14,7 @@ export class App extends Component {
     query: '',
     error: null,
     isLoading: false,
+    showModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -22,6 +24,13 @@ export class App extends Component {
       this.onFetchImage();
     }
   }
+
+  onToggleModal = event => {
+    console.log(event.target.src);
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
 
   // async componentDidUpdate(prevProps, prevState) {
   //   imgApiService.query = this.state.query;
@@ -46,7 +55,6 @@ export class App extends Component {
 
     try {
       const imageArr = await imgApiService.fetchImage();
-      console.log(imageArr);
       this.setState({ imageArr });
     } catch (error) {
       this.setState({ error });
@@ -66,7 +74,6 @@ export class App extends Component {
 
     try {
       const imageArr = await imgApiService.fetchImage();
-      console.log(imageArr);
       this.setState(prevState => ({
         imageArr: [...prevState.imageArr, ...imageArr],
       }));
@@ -78,13 +85,15 @@ export class App extends Component {
   };
 
   render() {
+    const { isLoading, imageArr, showModal } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.onSearch} />
-        <ImageGellary images={this.state.imageArr} />
-        {this.state.isLoading && <Loader />}
-        {this.state.imageArr.length >= 12 && (
-          <Button onLoadMore={this.onLoadMore} loading={this.state.isLoading} />
+        <ImageGallery images={imageArr} onToggleModal={this.onToggleModal} />
+        {showModal && <Modal images={imageArr} />}
+        {isLoading && <Loader />}
+        {imageArr.length >= 12 && (
+          <Button onLoadMore={this.onLoadMore} loading={isLoading} />
         )}
       </>
     );
