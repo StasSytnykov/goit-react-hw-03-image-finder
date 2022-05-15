@@ -15,6 +15,7 @@ export class App extends Component {
     error: null,
     isLoading: false,
     showModal: false,
+    largeImageURL: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -25,30 +26,26 @@ export class App extends Component {
     }
   }
 
-  onToggleModal = event => {
-    console.log(event.target.src);
+  onSearch = newQuery => {
+    this.setState({
+      query: newQuery,
+    });
+  };
+
+  onToggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
     }));
   };
 
-  // async componentDidUpdate(prevProps, prevState) {
-  //   imgApiService.query = this.state.query;
-
-  //   if (prevState.query !== this.state.query) {
-  //     this.setState({ isLoading: true });
-
-  //     try {
-  //       const imageArr = await imgApiService.fetchImage();
-  //       console.log(imageArr);
-  //       this.setState({ imageArr });
-  //     } catch (error) {
-  //       this.setState({ error });
-  //     } finally {
-  //       this.setState({ isLoading: false });
-  //     }
-  //   }
-  // }
+  onClickImg = event => {
+    console.log(event.target.src);
+    this.setState({
+      largeImageURL: this.state.imageArr.find(
+        img => img.webformatURL === event.target.src
+      ).largeImageURL,
+    });
+  };
 
   onFetchImage = async () => {
     this.setState({ isLoading: true });
@@ -61,12 +58,6 @@ export class App extends Component {
     } finally {
       this.setState({ isLoading: false });
     }
-  };
-
-  onSearch = newQuery => {
-    this.setState({
-      query: newQuery,
-    });
   };
 
   onLoadMore = async () => {
@@ -89,8 +80,20 @@ export class App extends Component {
     return (
       <>
         <Searchbar onSubmit={this.onSearch} />
-        <ImageGallery images={imageArr} onToggleModal={this.onToggleModal} />
-        {showModal && <Modal images={imageArr} />}
+
+        {
+          <ImageGallery
+            onClickImg={this.onClickImg}
+            images={imageArr}
+            onToggleModal={this.onToggleModal}
+          />
+        }
+        {showModal && (
+          <Modal
+            onToggleModal={this.onToggleModal}
+            img={this.state.largeImageURL}
+          />
+        )}
         {isLoading && <Loader />}
         {imageArr.length >= 12 && (
           <Button onLoadMore={this.onLoadMore} loading={isLoading} />

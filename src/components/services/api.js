@@ -21,10 +21,6 @@ export class ImgApiService {
     this.page += 1;
   }
 
-  resetPage() {
-    this.page = 1;
-  }
-
   get query() {
     return this.searchQuery;
   }
