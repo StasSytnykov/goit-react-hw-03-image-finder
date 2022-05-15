@@ -19,9 +19,10 @@ export class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    imgApiService.query = this.state.query;
+    const { query } = this.state;
+    imgApiService.query = query;
 
-    if (prevState.query !== this.state.query) {
+    if (prevState.query !== query) {
       this.onFetchImage();
     }
   }
@@ -39,7 +40,6 @@ export class App extends Component {
   };
 
   onClickImg = event => {
-    console.log(event.target.src);
     this.setState({
       largeImageURL: this.state.imageArr.find(
         img => img.webformatURL === event.target.src
@@ -76,7 +76,7 @@ export class App extends Component {
   };
 
   render() {
-    const { isLoading, imageArr, showModal } = this.state;
+    const { isLoading, imageArr, showModal, largeImageURL } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.onSearch} />
@@ -89,10 +89,7 @@ export class App extends Component {
           />
         }
         {showModal && (
-          <Modal
-            onToggleModal={this.onToggleModal}
-            img={this.state.largeImageURL}
-          />
+          <Modal onToggleModal={this.onToggleModal} img={largeImageURL} />
         )}
         {isLoading && <Loader />}
         {imageArr.length >= 12 && (
