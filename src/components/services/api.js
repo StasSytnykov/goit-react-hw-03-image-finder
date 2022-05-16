@@ -29,9 +29,3 @@ export class ImgApiService {
     this.searchQuery = newQuery;
   }
 }
-
-// const response = await axios.get(
-//   `https://pixabay.com/api/?q=${query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-// );
-
-// return response.data.hits;
