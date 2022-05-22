@@ -59,9 +59,10 @@ export class App extends Component {
     try {
       const imageArr = await imgApiService.fetchImage();
       this.setState({
-        imageArr: imageArr.map(({ id, webformatURL }) => ({
+        imageArr: imageArr.map(({ id, webformatURL, largeImageURL }) => ({
           id,
           webformatURL,
+          largeImageURL,
         })),
       });
     } catch (error) {
@@ -77,9 +78,10 @@ export class App extends Component {
       this.setState(prevState => ({
         imageArr: [
           ...prevState.imageArr,
-          ...imageArr.map(({ id, webformatURL }) => ({
+          ...imageArr.map(({ id, webformatURL, largeImageURL }) => ({
             id,
             webformatURL,
+            largeImageURL,
           })),
         ],
       }));
@@ -89,7 +91,8 @@ export class App extends Component {
   };
 
   onLoadMore = () => {
-    this.setState(prevState => ({ page: (prevState.page += 1) }));
+    const nextPage = this.state.page + 1;
+    return this.setState({ page: nextPage });
   };
 
   render() {
