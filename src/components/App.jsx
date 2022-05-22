@@ -73,6 +73,8 @@ export class App extends Component {
   };
 
   onLoadImage = async () => {
+    this.setState({ isLoading: true });
+
     try {
       const imageArr = await imgApiService.fetchImage();
       this.setState(prevState => ({
@@ -87,6 +89,8 @@ export class App extends Component {
       }));
     } catch (error) {
       this.setState({ error });
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
 
